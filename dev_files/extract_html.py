@@ -154,6 +154,68 @@
 # extract_data_from_html(input_html_file)
 
 
+# from bs4 import BeautifulSoup
+# import json
+
+# # Function to extract data from HTML content
+
+
+# def extract_data_from_html(html_file):
+#     with open(html_file, 'r', encoding='utf-8') as file:
+#         html_content = file.read()
+
+#     # Parse HTML content
+#     soup = BeautifulSoup(html_content, 'html.parser')
+
+#     # Create lists to store extracted data
+#     data_list = []
+
+#     # Find all <div class="mb1"> tags
+#     mb1_divs = soup.find_all('div', class_='mb1')
+
+#     # Extract information from each <div class="mb1"> tag
+#     for div in mb1_divs:
+#         # Extract href value from <a> tag inside <div class="mb1">
+#         href_tag = div.find('a', href=True)
+#         url = href_tag['href'] if href_tag else ''
+
+#         # Extract value from <span aria-hidden="true"> tag
+#         aria_hidden_span = div.find('span', {'aria-hidden': 'true'})
+#         name = aria_hidden_span.get_text(
+#             strip=True) if aria_hidden_span else ''
+
+#         # Extract value from <div class="entity-result__primary-subtitle t-14 t-black t-normal"> tag
+#         company_div = div.find('div', class_='entity-result__primary-subtitle')
+#         company = company_div.get_text(strip=True) if company_div else ''
+
+#         # Extract business information after "at", "@", or "bij"
+#         delimiters = [' at ', ' @ ', ' bij ']
+#         business = ''
+#         for delimiter in delimiters:
+#             if delimiter in company:
+#                 business = company.split(delimiter, 1)[-1].strip()
+#                 break
+
+#         data_list.append({
+#             'URL': url,
+#             'Name': name,
+#             'Company': company,
+#             'Business': business
+#         })
+
+#     # Write the data to a JSON file
+#     output_json_file = 'extracted_data.json'
+#     with open(output_json_file, 'w', encoding='utf-8') as json_file:
+#         json.dump(data_list, json_file, indent=4)
+#     print(f"Data extracted and saved to '{output_json_file}'")
+
+
+# # Input HTML file
+# input_html_file = '../page_content-ln.html'
+
+# # Call the function with the provided HTML file
+# extract_data_from_html(input_html_file)
+
 from bs4 import BeautifulSoup
 import json
 
@@ -188,6 +250,12 @@ def extract_data_from_html(html_file):
         company_div = div.find('div', class_='entity-result__primary-subtitle')
         company = company_div.get_text(strip=True) if company_div else ''
 
+        # Extract value from <div class="entity-result__secondary-subtitle t-14 t-normal"> tag for Location
+        secondary_subtitle_div = div.find(
+            'div', class_='entity-result__secondary-subtitle')
+        location = secondary_subtitle_div.get_text(
+            strip=True) if secondary_subtitle_div else ''
+
         # Extract business information after "at", "@", or "bij"
         delimiters = [' at ', ' @ ', ' bij ']
         business = ''
@@ -200,7 +268,8 @@ def extract_data_from_html(html_file):
             'URL': url,
             'Name': name,
             'Company': company,
-            'Business': business
+            'Business': business,
+            'Location': location  # Add Location to the extracted data
         })
 
     # Write the data to a JSON file
